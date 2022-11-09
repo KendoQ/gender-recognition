@@ -1,4 +1,4 @@
-#!/usr/bin/enyv python 
+#!/usr/bin/env python3 
 
 # file: speech.py (Python 2.7)
 
@@ -106,7 +106,7 @@ class Speech(object):
         try:
             subprocess.check_call(['mpg123', '-qw', wavname, self.name])
         except:
-            print "File Open Failed. MP3 filename was not valid."
+            print("File Open Failed. MP3 filename was not valid.")
             exit()
 
         # Return label for the new WAV file (string)
@@ -217,7 +217,7 @@ class Speech(object):
         # Print the sample rate, number of time samples, and
         # number of channels in human readable way.
         #
-        print "File : {} : sampling rate = {} Hz, length = {} samples, channels = {}"\
+        print("File : {} : sampling rate = {} Hz, length = {} samples, channels = {}")\
             .format(self.name, self.fs, self.length, self.channels)
 
     # end function
@@ -375,30 +375,25 @@ class Speech(object):
     # Find the maximum value and index in an array
     #
 #---------------------------------------------------------
-    def findmax(self,
-		data, 
-		offsetLeft = 0, 
-		offsetRight = -1, # if -1, the array size will be used
-    ):
-	
-        objType = type(data).__name__.strip()
-	if objType <> "ndarray":
-		raise Exception('data argument is no instance of numpy.array')
-	size = len(data)
-	if (size < 1):
-		raise Exception('data array is empty')
-	xOfMax = -1
-	valMax = min(data)
-	if offsetRight == -1:
-		offsetRight = size
-	for i in range(offsetLeft + 1, offsetRight - 1):
-		if data[i] >= data[i-1] and data[i] >= data[i + 1]:
-			if data[i] > valMax:
-				valMax = data[i]
-				xOfMax = i
 
+    def findmax(self, data, offsetLeft=0, offsetRight=-1):  # if -1, the array size will be used
+        objType = type(data).__name__.strip()
+        if objType != "ndarray":
+            raise Exception('data argument is no instance of numpy.array')
+        size = len(data)
+        if (size < 1):
+            raise Exception('data array is empty')
+            xOfMax = -1
+        valMax = min(data)
+        if offsetRight == -1:
+            offsetRight = size
+        for i in range(offsetLeft + 1, offsetRight - 1):
+            if data[i] >= data[i-1] and data[i] >= data[i + 1]:
+                if data[i] > valMax:
+                    valMax = data[i]
+                    xOfMax = i
         return [xOfMax, valMax]
-    
+
     # end function
     #
 
@@ -428,26 +423,26 @@ class Speech(object):
         voicingThreshold = 0.3,
     ):
 
-	data_tmp = data
+        data_tmp = data
 
-	# Apply Hamming window function
+	    # Apply Hamming window function
         #
         window = self.hamming(len(data_tmp))
         data_tmp = data_tmp.reshape(len(data_tmp),)
        
         data_tmp *= window 
 	
-	# Take autocorrelation of signal
+	    # Take autocorrelation of signal
         #
-	result = np.correlate(data_tmp, data_tmp, mode = 'full')
-	r = result[result.size/2:] / float(len(data))
+        result = np.correlate(data_tmp, data_tmp, mode = 'full')
+        r = result[result.size/2:] / float(len(data))
         
-	# find peak energy in autocorrelation
+	    # find peak energy in autocorrelation
         #
         xOfMax, valMax = self.findmax(r, fs / Fmax, fs / Fmin)
         valMax /= max(r)
         freq = fs / xOfMax
-	return freq
+        return freq
 
     # end function
     #

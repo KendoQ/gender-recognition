@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # File: gndr-rec.py
 
 # Author: Daniel Douglsa
